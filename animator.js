@@ -122,24 +122,6 @@ export class Animator {
 
         // Enviamos el primer nodo para que empiece a verificar
         readNodes(initialNode, 0, textToVerify)
-        /* let initialNode = undefined
-        let finalNode = undefined
-        console.log(textToVerify.textContent)
-        const callStack = []
-        for (let i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].isInitial) {
-                initialNode = this.nodes[i]
-                break;
-            }
-        }
-
-        for (let i = 0; i < this.transitions.length; i++) {
-            this.transitions[i].from.next.push(this.transitions[i].to)
-            this.transitions[i].to.previous.push(this.transitions[i].from)
-        }
-
-        readNodes(initialNode)
-        */
     }
 }
 
@@ -230,23 +212,6 @@ function readNodes(currentNode, charFrom, textToVerify) {
             readNodes(currentNode.next[goodChild].to, charFrom + 1, textToVerify)
         }, timeout/2)
     }, timeout)
-    /* let nextNodesNumber = currentNode.next.length
-    let currentChilds = 0;
-    let currentChar = stringVerify.slice(1)
-
-    if (currentNode.isFinal) {
-        currentNode.color = "green"
-        return true;
-    }
-    if (nextNodesNumber == 0) {
-        currentNode.color = "red"
-        return false;
-    }
-
-    currentNode.next.
-    currentNode.color = "blue"
-    readNodes(currentNode.next[currentChilds], currentChar)
-    */
 }
 
 /**
