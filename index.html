@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="#" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autómatas</title>
+</head>
+<style>
+  body {
+    overflow: hidden;
+    font-family: monospace;
+    background-color: rgb(23, 23, 23);
+    color: rgb(185, 185, 185);
+    text-align: center;
+    cursor: default;
+  }
+
+  h2 {
+    font-size: 32px;
+    margin: 14px 0 15px;
+    text-transform: uppercase;
+    letter-spacing: 7px;
+  }
+
+  div.range {
+    letter-spacing: 0.2px;
+    font-size: 20px;
+  }
+
+  div.range>span:last-child {
+    margin-left: 29px;
+  }
+
+  #cool>h3 {
+    font-size: 36px;
+    margin: 16px 0px 0px 0px;
+    font-weight: 500;
+    color: white;
+  }
+
+  #cool>button {
+    background: transparent;
+    display: block;
+    margin: 0 auto;
+    outline: none;
+    border: 1px solid rgb(222, 222, 222);
+    color: rgb(222, 222, 222);
+    padding: 6px 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: monospace;
+    margin-top: 21px;
+    transition: all 300ms;
+  }
+
+  #cool>button:hover:not(:disabled){
+    border-radius: 8px;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    transition: all 300ms;
+  }
+
+  #cool>button:active {
+    padding: 4px 14px;
+  }
+
+  #cool>button:disabled {
+    background: transparent;
+    display: block;
+    margin: 0 auto;
+    outline: none;
+    padding: 6px 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: monospace;
+    margin-top: 21px;
+    border: 1px solid rgb(164, 164, 164);
+    color: rgb(95, 95, 95);
+  }
+
+  canvas {
+    position: absolute;
+    left: 0;
+    top: 205px;
+  }
+  #cool>h3.reviewing{
+    color: rgb(95, 95, 95);
+  }
+  #cool>h3.passed{
+    color: green;
+  }
+  #cool>h3>span.active{
+    color: white;
+  }
+  #cool>h3>span.reviewed{
+    color: blue;
+  }
+  #cool>h3>span.wrong{
+    color: red;
+  }
+</style>
+
+<body>
+  <h2>Rango</h2>
+  <div class="range">
+    <span>PFA-001-A</span>
+    <span>PUZ-999-Z</span>
+  </div>
+  <div id="cool">
+    <h3 id="input"></h3>
+  </div>
+  <canvas id="diagram"></canvas>
+</body>
+<script type="module" src="/main.js"></script>
+
+</html>
