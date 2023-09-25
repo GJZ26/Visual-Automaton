@@ -1,6 +1,10 @@
 import { Node } from "./nodes"
 import Transition from "./Transitions"
 
+/**
+ * Animator es el encargado de asignar los estados, colores y poco más a los Nodes
+ * y transiciones.
+ */
 export class Animator {
 
     /**
@@ -17,7 +21,7 @@ export class Animator {
         let margin = 120
 
         this.nodes = [
-            new Node(100 + (margin * 1), 150, undefined, undefined, this.context, true),
+            new Node(100 + (margin * 1), 150, undefined, undefined, this.context, true), // Node inicial
             new Node(100 + (margin * 2), 150, undefined, undefined, this.context),
             new Node(100 + (margin * 3), 150, undefined, undefined, this.context),
             new Node(100 + (margin * 4), 150, undefined, undefined, this.context),
@@ -26,7 +30,7 @@ export class Animator {
             new Node(100 + (margin * 7), 150, undefined, undefined, this.context),
             new Node(100 + (margin * 8), 150, undefined, undefined, this.context),
             new Node(100 + (margin * 9), 150, undefined, undefined, this.context),
-            new Node(100 + (margin * 10), 150, undefined, undefined, this.context, false, true),
+            new Node(100 + (margin * 10), 150, undefined, undefined, this.context, false, true), // Node final
             // Parallel Nodes
             new Node(100 + (margin * 5), 250, undefined, undefined, this.context),
             new Node(100 + (margin * 6), 50, undefined, undefined, this.context),
@@ -50,12 +54,18 @@ export class Animator {
             new Transition(this.nodes[11], this.nodes[7], "[1-9]", this.context),
         ]
 
+        /*
+        Este evento es implementado para obtener la posicion del mouse en la pantalla, y mover el node a la posicion del mouse
+        */
         window.addEventListener("mousemove", (e) => {
             if (this.tost < 0 || this.tost >= this.nodes.length) return;
             this.nodes[this.tost].x = e.offsetX;
             this.nodes[this.tost].y = e.offsetY;
         })
 
+        /*
+        Este evento ayuda a saber si un click cae dentro del área de un Node, para seleccionarlo y poder moverlo, o simplemente posicionarlo.
+        */
         window.addEventListener("click", (e) => {
             if (this.tost !== -1) {
                 this.tost = -1;
@@ -74,6 +84,9 @@ export class Animator {
         })
     }
 
+    /**
+     * Este método recorre la coleccion de Nodes y transiciones y ejecuta el método de renderizado de cada uno de ellos.
+     */
     render() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.nodes.map((node, index) => {
@@ -86,14 +99,14 @@ export class Animator {
     }
 
     /**
-     * 
-     * @param {HTMLHeadElement} textToVerify 
+     * Este método comienza la ejecución del autómata
+     * @param {HTMLHeadElement} textToVerify - El texto (el elemento H3) donde se aloja el texto que queremos verificar.
      */
     startValidation(textToVerify) {
         textToVerify.classList.add("reviewing")
         let initialNode = undefined
-        const callStack = []
 
+        // Recorre la lista de Nodos para saber cual es el nodo inicial
         for (let i = 0; i < this.nodes.length; i++) {
             if (this.nodes[i].isInitial) {
                 initialNode = this.nodes[i]
@@ -101,11 +114,13 @@ export class Animator {
             }
         }
 
+        // Recorre la lista de transiciones, y vincula a cada nodo con su transiciones que continuan, y los que tiene por detrás
         for (let i = 0; i < this.transitions.length; i++) {
             this.transitions[i].from.next.push(this.transitions[i])
             this.transitions[i].to.previous.push(this.transitions[i])
         }
 
+        // Enviamos el primer nodo para que empiece a verificar
         readNodes(initialNode, 0, textToVerify)
         /* let initialNode = undefined
         let finalNode = undefined
@@ -129,13 +144,17 @@ export class Animator {
 }
 
 /**
- * @param {HTMLHeadElement} textToVerify 
- * @param {Node} currentNode 
+ * Esta funcion lee el Nodo actual, verifica el caracter que tiene que revisar, y valida si coincide con algunas
+ * de sus transiciones siguientes.
+ * @param {HTMLHeadElement} textToVerify - El elemento que H3 donde está el texto a verificar.
+ * @param {Node} currentNode - El Nodo actual a validar.
+ * @param {number} charFrom - El indíce del caracter del string que estamos revisando.
  */
 function readNodes(currentNode, charFrom, textToVerify) {
-    let timeout=20
-    let goodChild = 0;
-    let isPassed = false
+    let timeout=20 // Tiempo que se detiene la animacion en cada iteracion de caracter
+    let goodChild = 0; // El índice de la transición en donde sí pasó la regla
+    let isPassed = false // Flag para saber si el autómata logró encontrar una regla válida para el carácter
+
     if (currentNode.isFinal) {
         currentNode.color = "green"
         textToVerify.innerHTML = textToVerify.textContent
@@ -145,7 +164,8 @@ function readNodes(currentNode, charFrom, textToVerify) {
         return;
     }
 
-
+    // Recorre todas las transiciones que tiene por delante, y revisa si el carácter del string que tiene que validar
+    // respeta alguna de las reglas de las transiciones
     for (let i = 0; i < currentNode.next.length; i++) {
         if (currentNode.next[i].rule.test(textToVerify.textContent[charFrom])) {
             goodChild = i;
@@ -154,9 +174,16 @@ function readNodes(currentNode, charFrom, textToVerify) {
         }
     }
 
+    // Cambia el colore del nodo y de su transicion, a blanco para indicar que ese nodo está validando actualmente.
     currentNode.next[goodChild].changeStatus("Active")
     currentNode.changeStatus("Active")
 
+    // Este es un remedio raro para ponerle color a cada letra del h3
+    /*
+    Basicamente. por cada letra, adjunta un elemento span dentro del h3, 
+    ese span tiene una clase espeçifica para cambiar el color de la letra
+    según si ya ha sido revisada, o está activa.
+     */
     let temp = document.createElement("p")
     for (let i = 0; i < textToVerify.textContent.length; i++) {
         let letter = document.createElement("span")
@@ -172,11 +199,11 @@ function readNodes(currentNode, charFrom, textToVerify) {
     textToVerify.innerHTML = temp.innerHTML
     temp.innerHTML = ""
 
-
+    // Set timeout para dar un pequeño delay entre la revision actual, y la siguiente revision del siguiente nodo.
     setTimeout(() => {
-        if (currentNode.next.length == 0 || !isPassed) {
-            currentNode.next[goodChild].changeStatus("Wrong")
-            currentNode.changeStatus("Wrong")
+        if (currentNode.next.length == 0 || !isPassed) {       // Si no hay más transiciones que revisar o no se ha podido encontrar
+            currentNode.next[goodChild].changeStatus("Wrong") // una transicion válida para el caracter, cambia el texto a rojo
+            currentNode.changeStatus("Wrong")                // y no hace otro llamado a los nodos siguientes.
             for (let i = 0; i < textToVerify.textContent.length; i++) {
                 let letter = document.createElement("span")
                 if (i == charFrom) {
@@ -193,9 +220,13 @@ function readNodes(currentNode, charFrom, textToVerify) {
             restartButton()
             return;
         }
+        // Caso contrario, lo pinta de azul
         currentNode.next[goodChild].changeStatus("Passed")
         currentNode.changeStatus("Passed")
+
+        // Se espara un momento
         setTimeout(() => {
+            // Y se vuelve a llamar, pero con el siguiente Nodo de la transición correcta, e incrementando el índice del carácter a revisar
             readNodes(currentNode.next[goodChild].to, charFrom + 1, textToVerify)
         }, timeout/2)
     }, timeout)
@@ -218,6 +249,9 @@ function readNodes(currentNode, charFrom, textToVerify) {
     */
 }
 
+/**
+ * Reemplaza el botón de "Empezar revision" con "Probar con otro", que básicamente refresca la página xd
+ */
 function restartButton(){
     const oldBtn = document.getElementById("coolBtn")
     document.getElementById("cool").removeChild(oldBtn)

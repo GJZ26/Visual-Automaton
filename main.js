@@ -4,6 +4,10 @@ const inputView = document.getElementById("input")
 
 const animator = new Animator(document.getElementById("diagram"))
 
+/**
+ * Valida si existe el boton que se usa para iniciar el autómata, si no existe, lo crea, y añade el handler
+ * @returns Nada
+ */
 function validateAndCreateButton() {
   if (document.getElementById('coolBtn') != undefined) return
 
@@ -14,6 +18,10 @@ function validateAndCreateButton() {
   document.getElementById("cool").appendChild(btn)
 }
 
+/**
+ * Deshabilita el botón, cambia los colores de todos los nodos, y arranca el autómata
+ * @param {UIEvent} e 
+ */
 function btnHandler(e) {
   e.target.disabled = true
   for (let i = 0; i < animator.nodes.length; i++) {
@@ -25,7 +33,9 @@ function btnHandler(e) {
   animator.startValidation(inputView)
 }
 
-
+/**
+ * Evento usado para cuando escriben, mostrarlo en el h3 (no lo voy a arreglar)
+ */
 document.addEventListener('keypress', (e) => {
   if (e.key === "Enter" && inputView.textContent.length >= 9) {
       document.getElementById("coolBtn").click()
@@ -41,6 +51,7 @@ document.addEventListener('keypress', (e) => {
   inputView.textContent += e.key.toUpperCase()
 })
 
+/** Evento que escucha si se presiona la tecla de eliminar carácter */
 document.addEventListener('keydown', (e) => {
   if (e.key !== "Backspace") return;
   if (inputView.textContent.length === 9) {
@@ -50,6 +61,7 @@ document.addEventListener('keydown', (e) => {
   inputView.textContent = inputView.textContent.slice(0, inputView.textContent.length - 1);
 })
 
+/** Loop de animacion para el canvas */
 function loop() {
   animator.render()
   requestAnimationFrame(loop)

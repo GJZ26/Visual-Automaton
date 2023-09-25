@@ -1,5 +1,9 @@
 import { Node } from "./nodes";
 
+/**
+ * Transition hace referencia a las transiciones que puede tener cada Node.
+ * Así como su regla, que está representado como expresión regular
+ */
 export default class Transition {
     /**
      * 
@@ -11,16 +15,27 @@ export default class Transition {
     constructor(from, to, rule, context) {
         this.from = from
         this.to = to
+        // Convierte un string a una expresión regular, por ejemplo [a-zA-Z], lo cual implementa
+        // métodos como .test() para la validaciones de que usará posteriormente
         this.rule = new RegExp(rule);
         this.context = context
         this.target_x = 0
         this.target_y = 0
+        // La regla, pero conservada como string para que se muestre en el renderizado
         this.ruleString = rule
         this.fontSize = 13
         this.color = "rgb(222, 222, 222)"
     }
 
+    /**
+     * Renderiza las transiciones como una línea que conecta el Node salida, con el Node destino
+     */
     render() {
+        /*
+         * Las operaciones siguiente, se hacen para que en caso de mover un Node, la transición una
+        los Nodes conectados, en el angulo correcto, es decir, que la línea siga la direccion de los
+        dos Nodes para evitar que traspase la línea a los nodes
+         */
         const fromAngle = Math.atan2(this.to.y - (this.from.y + this.from.radius / 2), this.to.x - (this.from.x + this.from.radius / 2)) + 1.5708
         const fromAxisRelatives = [
             this.from.x + (this.from.radius) * Math.sin(fromAngle),
@@ -46,6 +61,7 @@ export default class Transition {
             (fromAxisRelatives[0] + toAxisRelatives[0]) / 2) - (this.context.measureText(this.ruleString).width / 2),
             ((fromAxisRelatives[1] + toAxisRelatives[1]) / 2))
         this.context.fillStyle = this.color
+        // La formulita es la punto medio, es para poner la regla de la transicion justo en medio de la linea dibujada.
         this.context.fillText(this.ruleString, (
             (fromAxisRelatives[0] + toAxisRelatives[0]) / 2) - (this.context.measureText(this.ruleString).width / 2),
             ((fromAxisRelatives[1] + toAxisRelatives[1]) / 2))
@@ -62,6 +78,10 @@ export default class Transition {
         this.context.restore()
     }
 
+    /**
+     * Cambia el color de la Transicion y de la letra del identificador según la situacion
+     * @param {string} mood - Color del Node y de la letra
+     */
     changeStatus(mood = "Active" || "Inactive" || "Passed") {
         switch (mood) {
             case "Active": this.color = "rgb(222, 222, 222)"; break;
