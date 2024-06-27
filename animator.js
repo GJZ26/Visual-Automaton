@@ -1,5 +1,5 @@
-import { Node } from "./nodes"
-import Transition from "./Transitions"
+import { Node } from "./nodes.js"
+import Transition from "./Transitions.js"
 
 /**
  * Animator es el encargado de asignar los estados, colores y poco más a los Nodes

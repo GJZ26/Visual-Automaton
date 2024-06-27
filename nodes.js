@@ -1,4 +1,4 @@
-import Transition from "./Transitions";
+import Transition from "./Transitions.js";
 
 /**
  * Node hace referencia a las bolitas de los autómatas

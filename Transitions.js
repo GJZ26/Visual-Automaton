@@ -1,4 +1,4 @@
-import { Node } from "./nodes";
+import { Node } from "./nodes.js";
 
 /**
  * Transition hace referencia a las transiciones que puede tener cada Node.

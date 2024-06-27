@@ -1,4 +1,4 @@
-import { Animator } from "./animator"
+import { Animator } from "./animator.js"
 
 const inputView = document.getElementById("input")
 
